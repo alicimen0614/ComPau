@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         navigationBarTheme:
             const NavigationBarThemeData(backgroundColor: Color(0xFF004485)),
-        scaffoldBackgroundColor: Color(0xFFEEF5FF),
+        scaffoldBackgroundColor: const Color(0xFFEEF5FF),
         colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: const Color(0xFF007dc4),
             secondary: const Color(0xFF004485)),

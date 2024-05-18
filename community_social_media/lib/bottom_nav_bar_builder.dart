@@ -24,7 +24,7 @@ class _BottomNavBarBuilderState extends State<BottomNavBarBuilder> {
     const NavigationDestination(
         selectedIcon: Icon(
           Icons.explore_rounded,
-          color: const Color(0xFF004485),
+          color: Color(0xFF004485),
           size: 30,
         ),
         icon: Icon(
@@ -36,7 +36,7 @@ class _BottomNavBarBuilderState extends State<BottomNavBarBuilder> {
     const NavigationDestination(
         selectedIcon: Icon(
           Icons.event,
-          color: const Color(0xFF004485),
+          color: Color(0xFF004485),
           size: 30,
         ),
         icon: Icon(
