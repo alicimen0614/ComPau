@@ -1,4 +1,4 @@
-import 'package:community_social_media/auth_screen/auth_screen.dart';
+import 'package:community_social_media/screens/auth_screen/auth_screen.dart';
 import 'package:community_social_media/screens/events_screen/events_screen.dart';
 import 'package:community_social_media/screens/user_screen/profile_screen.dart';
 import 'package:flutter/material.dart';
