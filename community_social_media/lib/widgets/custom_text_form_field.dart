@@ -39,16 +39,8 @@ class CustomTextFormField extends StatelessWidget {
         suffixIcon:
             useSuffixIcon == true ? const Icon(Icons.remove_red_eye) : null,
         filled: true,
-        fillColor: Colors.green,
+        fillColor: Colors.grey[300],
         contentPadding: const EdgeInsets.all(15),
-        // enabledBorder: OutlineInputBorder(
-        //   borderRadius: BorderRadius.circular(15),
-        //   borderSide: BorderSide(
-        //     color: Colors.grey[300]!,
-        //   ),
-        // ),
-        // focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(15)),
         prefixIcon:
             Icon(prefixIconData, size: 32, color: const Color(0xFFFBA834)),
         border: InputBorder.none,

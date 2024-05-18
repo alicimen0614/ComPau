@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../models/post_model.dart';
 
 class PostItemWidget extends StatelessWidget {
-  PostItemWidget({
+  const PostItemWidget({
     super.key,
     required this.post,
     this.onPressedToAddComment,
@@ -15,20 +15,20 @@ class PostItemWidget extends StatelessWidget {
   final Function()? onPressedToAddComment;
   final Function()? onPressedToLike;
 
-  final double iconSize = 35;
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: context.width,
       child: Card(
-        color: const Color(0xFFEEF5FF),
         margin: const EdgeInsets.only(bottom: 10),
         child: Column(children: [
           _itemHeader(context),
           if (post.description != null) _itemDescription(context),
           _itemBody(context),
           _itemBottom(),
+          const SizedBox(
+            height: 5,
+          )
         ]),
       ),
     );
@@ -37,20 +37,39 @@ class PostItemWidget extends StatelessWidget {
   Widget _itemBottom() {
     return Row(
       children: [
-        IconButton(
-            onPressed: onPressedToLike,
-            icon: Icon(
-              Icons.favorite_border_rounded,
-              size: iconSize,
-              color: Colors.blue,
-            )),
-        IconButton(
-            onPressed: onPressedToAddComment,
-            icon: Icon(
-              Icons.chat_bubble_outline_rounded,
-              size: iconSize,
-              color: Colors.blue,
-            ))
+        const SizedBox(
+          width: 5,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade500),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          width: 70,
+          height: 40,
+          child: IconButton(
+              onPressed: onPressedToLike,
+              icon: Icon(Icons.favorite_border_rounded,
+                  size: 25, color: Colors.grey[600])),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade500),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          width: 70,
+          height: 40,
+          child: IconButton(
+              onPressed: onPressedToAddComment,
+              icon: Icon(
+                Icons.chat_bubble_outline_rounded,
+                size: 25,
+                color: Colors.grey[600],
+              )),
+        )
       ],
     );
   }
@@ -74,15 +93,19 @@ class PostItemWidget extends StatelessWidget {
     return Padding(
       padding: context.paddingVerticalDefault,
       child: AspectRatio(
-        aspectRatio: 16 / 9,
+        aspectRatio: 16 / 10,
         child: Container(
-            /* decoration: BoxDecoration(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("lib/assets/images/kedi.jpg"),
+                  fit: BoxFit.fill)),
+          /* decoration: BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(post.postImageUrl!),
               fit: BoxFit.cover,
             ),
           ), */
-            ),
+        ),
       ),
     );
   }

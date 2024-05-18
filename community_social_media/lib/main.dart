@@ -1,7 +1,16 @@
 import 'package:community_social_media/bottom_nav_bar_builder.dart';
+import 'package:community_social_media/firebase_options.dart';
+import 'package:community_social_media/screens/auth/auth_screen.dart';
+import 'package:community_social_media/services/auth_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+AuthService _authService = AuthService();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -21,7 +30,14 @@ class MyApp extends StatelessWidget {
             secondary: const Color(0xFF004485)),
         useMaterial3: true,
       ),
-      home: const BottomNavBarBuilder(),
+      home: StreamBuilder(
+          stream: _authService.authState,
+          builder: (context, snapshot) {
+            if (snapshot.data != null) {
+              return const BottomNavBarBuilder();
+            }
+            return const AuthScreen();
+          }),
     );
   }
 }
