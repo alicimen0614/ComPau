@@ -1,6 +1,6 @@
 import 'package:community_social_media/const/context_extension.dart';
 import 'package:community_social_media/models/post_model.dart';
-import 'package:community_social_media/screens/explore_screen/posts_screen.dart';
+import 'package:community_social_media/screens/explore_screen/add_post_screen.dart';
 import 'package:community_social_media/widgets/post_item_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +13,8 @@ class ExploreScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF007dc4),
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => PostsScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddPostScreen()));
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         child: const Icon(Icons.add),
