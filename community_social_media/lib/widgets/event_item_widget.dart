@@ -99,7 +99,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
           image: DecorationImage(
             image: NetworkImage(post.postImageUrl!),
             fit: BoxFit.cover,
-          ),
+          ),e
         ), */
       ),
     );
