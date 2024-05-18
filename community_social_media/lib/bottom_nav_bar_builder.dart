@@ -22,12 +22,41 @@ class _BottomNavBarBuilderState extends State<BottomNavBarBuilder> {
 
   final List<Widget> items = [
     const NavigationDestination(
+        selectedIcon: Icon(
+          Icons.explore_rounded,
+          color: const Color(0xFF004485),
+          size: 30,
+        ),
         icon: Icon(
           Icons.explore_rounded,
+          color: Colors.white,
+          size: 30,
         ),
         label: ""),
-    const NavigationDestination(icon: Icon(Icons.event), label: ""),
-    const NavigationDestination(icon: Icon(Icons.person), label: ""),
+    const NavigationDestination(
+        selectedIcon: Icon(
+          Icons.event,
+          color: const Color(0xFF004485),
+          size: 30,
+        ),
+        icon: Icon(
+          Icons.event,
+          color: Colors.white,
+          size: 30,
+        ),
+        label: ""),
+    const NavigationDestination(
+        selectedIcon: Icon(
+          Icons.person,
+          color: Color(0xFF004485),
+          size: 30,
+        ),
+        icon: Icon(
+          Icons.person,
+          color: Colors.white,
+          size: 30,
+        ),
+        label: ""),
   ];
   @override
   Widget build(BuildContext context) {
@@ -36,6 +65,9 @@ class _BottomNavBarBuilderState extends State<BottomNavBarBuilder> {
             FloatingActionButtonLocation.miniCenterDocked,
         body: screens[currentIndex],
         bottomNavigationBar: NavigationBar(
+          shadowColor: Colors.black,
+          surfaceTintColor: Colors.black,
+          indicatorColor: Colors.white,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           destinations: items,
           selectedIndex: currentIndex,
