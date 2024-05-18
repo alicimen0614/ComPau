@@ -1,6 +1,8 @@
 import 'package:community_social_media/const/context_extension.dart';
+import 'package:community_social_media/services/firestore_service.dart';
 import 'package:community_social_media/widgets/elevated_button_widget.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../bottom_nav_bar_builder.dart';
@@ -17,6 +19,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  FirestoreService _firestoreService = FirestoreService();
   final signInFormKey = GlobalKey<FormState>();
   final registerFormKey = GlobalKey<FormState>();
   final resetFormKey = GlobalKey<FormState>();
@@ -24,7 +27,7 @@ class _AuthScreenState extends State<AuthScreen> {
   TextEditingController signInPasswordController = TextEditingController();
   TextEditingController registerEmailController = TextEditingController();
   TextEditingController registerPasswordController = TextEditingController();
-  TextEditingController usernamePasswordController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
 
   TextEditingController registerPasswordConfirmController =
       TextEditingController();
@@ -237,7 +240,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 validator: (value) {
                   return null;
                 },
-                textEditingController: usernamePasswordController,
+                textEditingController: usernameController,
                 autoCorrect: true,
                 textInputType: TextInputType.emailAddress,
                 prefixIconData: Icons.account_circle,
@@ -320,12 +323,13 @@ class _AuthScreenState extends State<AuthScreen> {
                       builder: (context) => const Center(
                             child: CircularProgressIndicator(),
                           ));
+
                   await authService
                       .createUserWithEmailAndPassword(
                           registerEmailController.text,
                           registerPasswordController.text,
                           context)
-                      .then((value) {
+                      .then((value) async {
                     if (value != null) {
                       Navigator.pushAndRemoveUntil(
                           context,
@@ -333,6 +337,8 @@ class _AuthScreenState extends State<AuthScreen> {
                             builder: (context) => const BottomNavBarBuilder(),
                           ),
                           (route) => false);
+                      await _firestoreService
+                          .createUser(usernameController.text);
                     } else {
                       Navigator.pop(context);
                     }

@@ -7,7 +7,7 @@ class CustomElevatedButton extends StatelessWidget {
     required this.btnTitle,
     required this.onPressed,
     this.btnColor = Colors.blue,
-    this.textColor = Colors.black,
+    this.textColor = Colors.white,
     this.borderRadius = 8.0,
     this.paddingVertical = 10.0,
     this.paddingHorizontal = 15.0,
@@ -47,7 +47,10 @@ class CustomElevatedButton extends StatelessWidget {
             vertical: paddingVertical,
             horizontal: paddingHorizontal,
           ),
-          child: Text(btnTitle, style: context.textTheme.titleMedium),
+          child: Text(
+            btnTitle,
+            style: context.textTheme.titleMedium?.copyWith(color: textColor),
+          ),
         ),
       ),
     );

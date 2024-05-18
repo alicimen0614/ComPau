@@ -69,6 +69,7 @@ class AuthService {
       // ignore: unused_local_variable
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'weak-password':
@@ -101,7 +102,8 @@ class AuthService {
                   Text('Bilinmeyen bir hata meydana geldi: ${e.message}')));
           break;
       }
-    } catch (e) {}
+      return false;
+    }
   }
 
   Future<UserCredential?> signInWithEmailAndPassword(
