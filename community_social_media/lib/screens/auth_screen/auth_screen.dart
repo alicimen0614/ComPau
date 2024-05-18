@@ -1,7 +1,9 @@
+import 'package:community_social_media/const/context_extension.dart';
+import 'package:community_social_media/widgets/elevated_button_widget.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/custom_text_form_field.dart';
+import '../../widgets/custom_text_form_field.dart';
 
 enum FormStatus { signIn, register, reset }
 
@@ -30,47 +32,46 @@ class _AuthScreenState extends State<AuthScreen> {
     return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-            backgroundColor: Colors.white,
             body: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height - 70,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Spacer(flex: 5),
-                    Expanded(
-                        flex: 2,
-                        child: Text(
-                          formStatus == FormStatus.signIn
-                              ? "Merhaba!"
-                              : formStatus == FormStatus.register
-                                  ? "Hesabını oluştur"
-                                  : "Şifremi unuttum",
-                          style: const TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                          textAlign: TextAlign.start,
-                        )),
-                    Expanded(
-                        flex: formStatus == FormStatus.signIn ? 2 : 0,
-                        child: formStatus == FormStatus.signIn
-                            ? Text(
-                                "Hoşgeldin, giriş yapmak için e-posta adresini ve şifreni kullan.",
-                                style: TextStyle(color: Colors.grey[500]))
-                            : const SizedBox.shrink()),
-                    const Spacer(flex: 2),
-                    formStatus == FormStatus.register
-                        ? Expanded(flex: 20, child: registerForm())
-                        : formStatus == FormStatus.signIn
-                            ? Expanded(flex: 15, child: signInForm())
-                            : Expanded(flex: 15, child: resetForm()),
-                  ],
-                ),
-              ),
-            )));
+          padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
+          child: SizedBox(
+            height: context.height - 70,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Spacer(flex: 4),
+                Expanded(
+                    flex: 2,
+                    child: Text(
+                      formStatus == FormStatus.signIn
+                          ? "Merhaba!"
+                          : formStatus == FormStatus.register
+                              ? "Hesabını oluştur"
+                              : "Şifremi unuttum",
+                      style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                      textAlign: TextAlign.start,
+                    )),
+                // Expanded(
+                //     flex: formStatus == FormStatus.signIn ? 2 : 0,
+                //     child: formStatus == FormStatus.signIn
+                //         ? Text(
+                //             "Hoşgeldin, giriş yapmak için e-posta adresini ve şifreni kullan.",
+                //             style: TextStyle(color: Colors.grey[500]))
+                //         : const SizedBox.shrink()),
+                const Spacer(flex: 2),
+                formStatus == FormStatus.register
+                    ? Expanded(flex: 20, child: registerForm())
+                    : formStatus == FormStatus.signIn
+                        ? Expanded(flex: 15, child: signInForm())
+                        : Expanded(flex: 15, child: resetForm()),
+              ],
+            ),
+          ),
+        )));
   }
 
   Form signInForm() {
@@ -81,43 +82,71 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Column(
           children: [
             Expanded(
-              flex: 3,
-              child: CustomTextFormField(
-                validator: (value) {
-                  if (EmailValidator.validate(value!)) {
-                    return null;
-                  } else {
-                    return 'Lütfen geçerli bir E-posta adresi giriniz.';
-                  }
-                },
-                textEditingController: signInEmailController,
-                hintText: "E-mail",
-                autoCorrect: true,
-                textInputType: TextInputType.emailAddress,
-                prefixIconData: Icons.account_circle,
-                useSuffixIcon: false,
+              flex: 5,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 5,
+                  horizontal: 15,
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(25),
+                      bottom: Radius.circular(10),
+                    )),
+                child: Center(
+                  child: CustomTextFormField(
+                    validator: (value) {
+                      if (EmailValidator.validate(value!)) {
+                        return null;
+                      } else {
+                        return 'Lütfen geçerli bir E-posta adresi giriniz.';
+                      }
+                    },
+                    textEditingController: signInEmailController,
+                    autoCorrect: true,
+                    textInputType: TextInputType.emailAddress,
+                    prefixIconData: Icons.account_circle,
+                    useSuffixIcon: false,
+                    label: 'Email',
+                  ),
+                ),
               ),
             ),
-            const Spacer(
-              flex: 1,
+            const SizedBox(
+              height: 5,
             ),
             Expanded(
-              flex: 3,
-              child: CustomTextFormField(
-                validator: (value) {
-                  if (value!.length < 6 || value.length > 16) {
-                    return "Şifreniz 6-16 karakter arasında olmalıdır";
-                  } else {
-                    return null;
-                  }
-                },
-                textEditingController: signInPasswordController,
-                obscureText: true,
-                hintText: "Şifre",
-                autoCorrect: true,
-                textInputType: TextInputType.emailAddress,
-                prefixIconData: Icons.lock,
-                useSuffixIcon: true,
+              flex: 5,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 5,
+                  horizontal: 15,
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(10),
+                      bottom: Radius.circular(25),
+                    )),
+                child: Center(
+                  child: CustomTextFormField(
+                    validator: (value) {
+                      if (value!.length < 6 || value.length > 16) {
+                        return "Şifreniz 6-16 karakter arasında olmalıdır";
+                      } else {
+                        return null;
+                      }
+                    },
+                    textEditingController: signInPasswordController,
+                    obscureText: true,
+                    autoCorrect: true,
+                    textInputType: TextInputType.emailAddress,
+                    prefixIconData: Icons.lock,
+                    useSuffixIcon: true,
+                    label: 'Şifre',
+                  ),
+                ),
               ),
             ),
             Expanded(
@@ -132,7 +161,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     },
                     child: Text(
                       "Şifremi Unuttum",
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: context.textTheme.bodyMedium,
                     )),
               ),
             ),
@@ -140,45 +169,12 @@ class _AuthScreenState extends State<AuthScreen> {
               flex: 2,
             ),
             Expanded(
-              flex: 2,
-              child: ElevatedButton(
-                  onPressed: () async {
-                    /* if (signInFormKey.currentState!.validate()) {
-                      showDialog(
-                          context: context,
-                          builder: (context) => const Center(
-                                child: CircularProgressIndicator(),
-                              ));
-                      await authService
-                          .signInWithEmailAndPassword(
-                              signInEmailController.text,
-                              signInPasswordController.text,
-                              context)
-                          .then((value) {
-                        if (value != null) {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const BottomNavBarBuilder(),
-                              ),
-                              (route) => false);
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      });
-                    } */
-                  },
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(170, 50),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                  ),
-                  child: const Text(
-                    "Giriş Yap",
-                    style: TextStyle(color: Colors.white),
-                  )),
-            ),
+                flex: 3,
+                child: CustomElevatedButton(
+                  btnTitle: 'Giriş Yap',
+                  onPressed: () {},
+                  borderRadius: 50,
+                )),
             const Spacer(
               flex: 2,
             ),
@@ -247,10 +243,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   }
                 },
                 textEditingController: registerEmailController,
-                hintText: "E-posta",
                 autoCorrect: true,
                 textInputType: TextInputType.emailAddress,
                 prefixIconData: Icons.account_circle,
+                label: 'Email',
               ),
             ),
             Expanded(
@@ -269,11 +265,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 },
                 textEditingController: registerPasswordController,
                 obscureText: true,
-                hintText: "Şifre",
                 autoCorrect: true,
                 textInputType: TextInputType.emailAddress,
                 prefixIconData: Icons.lock,
                 useSuffixIcon: true,
+                label: 'Şifre',
               ),
             ),
             Expanded(
@@ -292,11 +288,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 },
                 textEditingController: registerPasswordConfirmController,
                 obscureText: true,
-                hintText: "Şifre tekrar",
                 autoCorrect: true,
                 textInputType: TextInputType.emailAddress,
                 prefixIconData: Icons.lock,
                 useSuffixIcon: true,
+                label: 'Şifre Tekrar',
               ),
             ),
             const Spacer(
@@ -410,10 +406,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   }
                 },
                 textEditingController: resetEmailController,
-                hintText: "E-mail",
                 autoCorrect: true,
                 textInputType: TextInputType.emailAddress,
                 prefixIconData: Icons.account_circle,
+                label: 'Email',
               ),
             ),
             const Spacer(
