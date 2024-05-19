@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/event_model.dart';
-import '../models/event_model.dart';
+
 
 class EventItemWidget extends StatefulWidget {
   const EventItemWidget({
