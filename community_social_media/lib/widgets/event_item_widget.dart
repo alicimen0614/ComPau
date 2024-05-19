@@ -1,5 +1,7 @@
 import 'package:community_social_media/const/context_extension.dart';
+import 'package:community_social_media/screens/events_screen/detailed_event_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/event_model.dart';
 import '../models/event_model.dart';
@@ -21,20 +23,35 @@ class _EventItemWidgetState extends State<EventItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: context.width,
-      child: Card(
-        color: Colors.white.withOpacity(0.8),
-        margin: const EdgeInsets.only(bottom: 10),
-        child: Padding(
-          padding: context.paddingAllDefault,
-          child: Column(
-            children: [
-              _itemHeader(context),
-              _itemBody(context),
-              _itemBottom(),
-              if (widget.event.description != null) _itemDescription(context),
-            ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailedEventScreen(
+                      event: widget.event,
+                    )));
+      },
+      child: SizedBox(
+        width: context.width,
+        child: Card(
+          color: Colors.white.withOpacity(0.8),
+          margin: const EdgeInsets.only(bottom: 10),
+          child: Padding(
+            padding: context.paddingAllDefault,
+            child: Column(
+              children: [
+                _itemHeader(context),
+                _itemBody(context),
+                _itemBottom(),
+                Text(
+                  "Etkinlik Tarihi: ${DateFormat('dd-MM-yyyy HH:mm').format(widget.event!.eventDate!)}",
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                if (widget.event.description != null) _itemDescription(context),
+              ],
+            ),
           ),
         ),
       ),
@@ -66,7 +83,17 @@ class _EventItemWidgetState extends State<EventItemWidget> {
               Icons.chat_bubble_outline_rounded,
               size: 25,
               color: Colors.black,
-            ))
+            )),
+        const SizedBox(
+          width: 5,
+        ),
+        const Icon(
+          Icons.location_pin,
+          size: 30,
+          color: Colors.black,
+        ),
+        SizedBox(width: 130, child: Text(widget.event!.location!)),
+        Spacer(),
       ],
     );
   }
@@ -74,7 +101,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
   Padding _itemDescription(BuildContext context) {
     debugPrint('${widget.event.description}');
     return Padding(
-      padding: context.paddingHorizontalLow,
+      padding: context.paddingAllDefault,
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
@@ -144,6 +171,16 @@ class _EventItemWidgetState extends State<EventItemWidget> {
           const SizedBox(
             height: 5,
           ),
+          Padding(
+            padding: context.paddingAllDefault,
+            child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.event.eventTitle!,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                )),
+          )
         ],
       ),
     );

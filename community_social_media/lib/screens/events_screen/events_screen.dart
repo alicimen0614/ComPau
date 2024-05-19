@@ -8,9 +8,14 @@ import 'package:flutter/material.dart';
 
 final firestoreService = FirestoreService();
 
-class EventsScreen extends StatelessWidget {
+class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
 
+  @override
+  State<EventsScreen> createState() => _EventsScreenState();
+}
+
+class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -19,11 +24,20 @@ class EventsScreen extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFF007dc4),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddEventScreen()));
+          onPressed: () async {
+            final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddEventScreen()))
+                .then((value) {
+              if (value == true) {
+                setState(() {
+                  loadData(context, false);
+                });
+              }
+            });
+
+            print(result);
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
@@ -63,7 +77,7 @@ class EventsScreen extends StatelessWidget {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: context.dynamicHeight(.01)),
         child: FutureBuilder(
-          future: firestoreService.getEvent(),
+          future: firestoreService.getEvent(bringHistory),
           builder: (context, snapshot) {
             List<EventModel>? events = [];
             if (snapshot.hasData) {
