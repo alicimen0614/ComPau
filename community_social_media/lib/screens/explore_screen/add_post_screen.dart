@@ -24,7 +24,7 @@ class AddPostScreen extends StatefulWidget {
 
 class _PostsScreenState extends State<AddPostScreen> {
   final descriptionController = TextEditingController();
-  FirestoreService _firestoreService = FirestoreService();
+  final _firestoreService = FirestoreService();
 
   File? pickedImage;
   Uint8List? imageAsByte;

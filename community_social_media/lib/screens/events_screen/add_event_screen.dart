@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:community_social_media/const/context_extension.dart';
+import 'package:community_social_media/models/event_model.dart';
+import 'package:community_social_media/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -18,6 +20,7 @@ class AddEventScreen extends StatefulWidget {
 
 class _PostsScreenState extends State<AddEventScreen> {
   final descriptionController = TextEditingController();
+  final _fireStoreService = FirestoreService();
 
   File? pickedImage;
   Uint8List? imageAsByte;
@@ -25,83 +28,88 @@ class _PostsScreenState extends State<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: SingleChildScrollView(
-          child: Padding(
-              padding: context.paddingAllLow,
-              child: Column(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 16 / 10,
-                    child: pickedImage != null
-                        ? Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: FileImage(
-                                  pickedImage!,
-                                ),
-                              ),
+      appBar: AppBar(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: context.paddingAllLow,
+          child: Column(
+            children: [
+              AspectRatio(
+                aspectRatio: 16 / 10,
+                child: pickedImage != null
+                    ? Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: FileImage(
+                              pickedImage!,
                             ),
-                          )
-                        : Container(
-                            color: Colors.grey,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.camera_alt_outlined,
-                                      size: 50,
-                                    ),
-                                    onPressed: () {
-                                      modalBottomSheetBuilderForPopUpMenu(
-                                          context);
-                                    },
-                                  ),
-                                  const Text(
-                                    "Bir fotoğraf ekle",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                  )
-                                ]),
                           ),
-                  ),
-                  SizedBox(
-                    height: context.dynamicHeight(.05),
-                  ),
-                  TextField(
-                    maxLines: null,
-                    controller:
-                        descriptionController, // Attach the controller to the TextField
-                    decoration: const InputDecoration(
-                        filled: true,
-                        counterStyle: TextStyle(color: Colors.white),
-                        hintText: 'Mesajınızı buraya yazın...',
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder()),
-                  ),
-                  SizedBox(
-                    height: context.dynamicHeight(.05),
-                  ),
-                  CustomElevatedButton(
-                    btnTitle: 'Paylaş',
-                    onPressed: () {
-                      debugPrint('post submit');
-                      // PostModel newPost = PostModel(
-                      //   description: descriptionController.text == "" ? null : descriptionController.text,
-                      //   timestamp: DateTime.now(),
-                      // );
-                      // ref
-                      //     .read(postControllerProvider)
-                      //     .setPostToFirestore(newPost, selectedImage!)
-                      //     .then((value) => Navigator.pop(context));
-                    },
-                    btnColor: Colors.blue,
-                    textColor: Colors.white,
-                  ),
-                ],
-              )),
-        ));
+                        ),
+                      )
+                    : Container(
+                        color: Colors.grey,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.camera_alt_outlined,
+                                  size: 50,
+                                ),
+                                onPressed: () {
+                                  modalBottomSheetBuilderForPopUpMenu(context);
+                                },
+                              ),
+                              const Text(
+                                "Bir fotoğraf ekle",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ]),
+                      ),
+              ),
+              SizedBox(
+                height: context.dynamicHeight(.05),
+              ),
+              TextField(
+                maxLines: null,
+                controller:
+                    descriptionController, // Attach the controller to the TextField
+                decoration: const InputDecoration(
+                    filled: true,
+                    counterStyle: TextStyle(color: Colors.white),
+                    hintText: 'Mesajınızı buraya yazın...',
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder()),
+              ),
+              SizedBox(
+                height: context.dynamicHeight(.05),
+              ),
+              CustomElevatedButton(
+                btnTitle: 'Paylaş',
+                onPressed: () async {
+                  debugPrint('event submit');
+                  final navigator = Navigator.of(context);
+                  EventModel newEvent = EventModel(
+                    description: descriptionController.text == ""
+                        ? null
+                        : descriptionController.text,
+                    timestamp: DateTime.now(),
+                  );
+                  String imageUrl =
+                      await _fireStoreService.uploadImage(pickedImage!);
+                  newEvent.eventImageUrl = imageUrl;
+                  await _fireStoreService.createEvent(newEvent);
+                  navigator.pop();
+                },
+                btnColor: Colors.blue,
+                textColor: Colors.white,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future pickImage(ImageSource source) async {
@@ -128,6 +136,7 @@ class _PostsScreenState extends State<AddEventScreen> {
           });
         }
       }
+      // ignore: empty_catches
     } on PlatformException {}
   }
 
