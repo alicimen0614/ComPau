@@ -17,24 +17,27 @@ class _DetailedEventScreenState extends State<DetailedEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Padding(
-        padding: context.paddingAllDefault,
-        child: Column(
-          children: [
-            _itemHeader(context),
-            _itemBody(context),
-            _itemBottom(),
-            Text(
-              "Etkinlik Tarihi: ${DateFormat('dd-MM-yyyy HH:mm').format(widget.event!.eventDate!)}",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-            if (widget.event?.description != null) _itemDescription(context),
-          ],
+    return SafeArea(
+      child: Scaffold(
+          body: SingleChildScrollView(
+        child: Padding(
+          padding: context.paddingAllDefault,
+          child: Column(
+            children: [
+              _itemHeader(context),
+              _itemBody(context),
+              _itemBottom(),
+              Text(
+                "Etkinlik Tarihi: ${DateFormat('dd-MM-yyyy HH:mm').format(widget.event!.eventDate!)}",
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              if (widget.event?.description != null) _itemDescription(context),
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 
   Widget _itemBottom() {

@@ -1,6 +1,7 @@
 import 'package:community_social_media/const/context_extension.dart';
 import 'package:community_social_media/screens/events_screen/detailed_event_screen.dart';
 import 'package:community_social_media/screens/events_screen/events_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -19,6 +20,13 @@ class EventItemWidget extends StatefulWidget {
 }
 
 class _EventItemWidgetState extends State<EventItemWidget> {
+  int likeCount = 0;
+  @override
+  void initState() {
+    getLikes();
+    super.initState();
+  }
+
   bool isLiked = false;
 
   @override
@@ -59,6 +67,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
   }
 
   Widget _itemBottom() {
+    print(widget.event.likes!.length.toString());
     return Row(
       children: [
         Text(widget.event.likes!.length.toString()),
@@ -70,12 +79,18 @@ class _EventItemWidgetState extends State<EventItemWidget> {
                 isLiked = !isLiked;
               });
               if (isLiked == true) {
-                await firestoreService.addUserIdToLikes(widget.event.eventId!);
+                await firestoreService
+                    .addUserIdToLikes(widget.event.eventId!)
+                    .whenComplete(() {
+                  setState(() {});
+                });
               } else {
                 await firestoreService
-                    .deleteUserIdFromLikes(widget.event.eventId!);
+                    .deleteUserIdFromLikes(widget.event.eventId!)
+                    .whenComplete(() {
+                  setState(() {});
+                });
               }
-              setState(() {});
             },
             icon: Icon(
               isLiked != true
@@ -126,7 +141,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
 
   Widget _itemBody(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 16 / 16,
+      aspectRatio: 2 / 2.5,
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
@@ -194,5 +209,13 @@ class _EventItemWidgetState extends State<EventItemWidget> {
         ],
       ),
     );
+  }
+
+  void getLikes() {
+    if (widget.event.likes!.contains(FirebaseAuth.instance.currentUser!.uid)) {
+      setState(() {
+        isLiked = true;
+      });
+    }
   }
 }
