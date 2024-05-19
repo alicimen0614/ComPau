@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:community_social_media/models/event_model.dart';
 import 'package:community_social_media/models/post_model.dart';
 import 'package:community_social_media/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,5 +51,25 @@ class FirestoreService {
     var datav2 = data.docs;
     var datav3 = datav2.map((e) => PostModel.fromJson(e.data())).toList();
     return datav3;
+  }
+
+  Future<void> createEvent(EventModel newEvent) async {
+    var docRef = firestoreService.collection("events").doc();
+    newEvent.eventId = docRef.id;
+    await docRef.set(newEvent.toJson());
+  }
+
+  Future<List<EventModel>> getEvent() async {
+    try {
+      List<EventModel> events = List<EventModel>.empty(growable: true);
+      var querySnapshot = await firestoreService.collection("events").get();
+      for (var doc in querySnapshot.docs) {
+        var event = EventModel.fromJson(doc.data());
+        events.add(event);
+      }
+      return events;
+    } catch (e) {
+      throw Exception('Error : $e');
+    }
   }
 }

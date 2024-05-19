@@ -20,6 +20,7 @@ class PostItemWidget extends StatelessWidget {
     return SizedBox(
       width: context.width,
       child: Card(
+        color: Colors.white.withOpacity(0.8),
         margin: const EdgeInsets.only(bottom: 10),
         child: Column(children: [
           _itemHeader(context),

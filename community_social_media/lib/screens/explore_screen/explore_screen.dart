@@ -13,52 +13,56 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  bool isLoading = false;
   final _firestoreService = FirestoreService();
-  List<PostModel> postList = [];
+
   @override
   void initState() {
-    getPosts();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF007dc4),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddPostScreen()));
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        child: const Icon(Icons.add),
-      ),
-      backgroundColor: const Color(0xFFEEF5FF),
-      appBar: _buildAppBar(context),
-      body: isLoading == false
-          ? ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(
-                    height: 10,
-                  ),
-              itemCount: postList.length,
-              itemBuilder: (context, index) {
-                return PostItemWidget(
-                  post: PostModel(
-                      description: postList[index].description,
-                      postId: postList[index].postId,
-                      postImageUrl: postList[index].postImageUrl,
-                      timestamp: postList[index].timestamp,
-                      userId: postList[index].userId,
-                      userName: postList[index].userName,
-                      likes: postList[index].likes,
-                      userImage: postList[index].userImage),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color(0xFF007dc4),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AddPostScreen()));
+          },
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          child: const Icon(Icons.add),
+        ),
+        backgroundColor: const Color(0xFFEEF5FF),
+        appBar: _buildAppBar(context),
+        body: FutureBuilder<List<PostModel>>(
+            future: _firestoreService.getPosts(),
+            builder: (context, snapshot) {
+              if (snapshot.data != null) {
+                return ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(
+                          height: 10,
+                        ),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return PostItemWidget(
+                        post: PostModel(
+                            description: snapshot.data![index].description,
+                            postId: snapshot.data![index].postId,
+                            postImageUrl: snapshot.data![index].postImageUrl,
+                            timestamp: snapshot.data![index].timestamp,
+                            userId: snapshot.data![index].userId,
+                            userName: snapshot.data![index].userName,
+                            likes: snapshot.data![index].likes,
+                            userImage: snapshot.data![index].userImage),
+                      );
+                    });
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-              })
-          : Center(
-              child: CircularProgressIndicator(),
-            ),
-    );
+              }
+            }));
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -135,15 +139,5 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ],
           );
         });
-  }
-
-  void getPosts() async {
-    setState(() {
-      isLoading = true;
-    });
-    postList = await _firestoreService.getPosts();
-    setState(() {
-      isLoading = false;
-    });
   }
 }
