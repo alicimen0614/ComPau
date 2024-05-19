@@ -109,15 +109,7 @@ class _PostsScreenState extends State<AddPostScreen> {
                           await _firestoreService.uploadImage(pickedImage!);
                       newPost.postImageUrl = imageUrl;
 
-                      String userName = "";
-                      if (FirebaseAuth.instance.currentUser!.displayName ==
-                          null) {
-                        userName = await _firestoreService.getUserName();
-                      } else {
-                        userName =
-                            FirebaseAuth.instance.currentUser!.displayName!;
-                      }
-                      newPost.userName = userName;
+                      newPost.userName = await _firestoreService.getUserName();
                       newPost.userId =
                           _firestoreService.firebaseAuth.currentUser!.uid;
 

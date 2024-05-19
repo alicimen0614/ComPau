@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
-
 class FirestoreService {
   final firestoreService = FirebaseFirestore.instance;
   final firebaseAuth = FirebaseAuth.instance;
@@ -69,7 +68,10 @@ class FirestoreService {
   }
 
   Future<List<PostModel>> getPostsOfUser() async {
-    var data = await firestoreService.collection("posts").where("userId",isEqualTo: firebaseAuth.currentUser!.uid).get();
+    var data = await firestoreService
+        .collection("posts")
+        .where("userId", isEqualTo: firebaseAuth.currentUser!.uid)
+        .get();
     var datav2 = data.docs;
     var datav3 = datav2.map((e) => PostModel.fromJson(e.data())).toList();
     return datav3;
