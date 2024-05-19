@@ -95,6 +95,7 @@ class _PostsScreenState extends State<AddPostScreen> {
                     borderRadius: 25,
                     btnTitle: 'Paylaş',
                     onPressed: () async {
+                      Navigator.pop(context);
                       debugPrint('post submit');
                       PostModel newPost = PostModel(
                           description: descriptionController.text == ""

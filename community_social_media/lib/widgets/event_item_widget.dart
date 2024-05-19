@@ -61,6 +61,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
   Widget _itemBottom() {
     return Row(
       children: [
+        Text(widget.event.likes!.length.toString()),
         IconButton(
             onPressed: () async {
               //doing this knowingly :(
@@ -74,6 +75,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
                 await firestoreService
                     .deleteUserIdFromLikes(widget.event.eventId!);
               }
+              setState(() {});
             },
             icon: Icon(
               isLiked != true
