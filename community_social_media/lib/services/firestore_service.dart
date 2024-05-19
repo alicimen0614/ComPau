@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../models/event_model.dart';
 
 class FirestoreService {
   final firestoreService = FirebaseFirestore.instance;
@@ -21,6 +20,19 @@ class FirestoreService {
         .collection("users")
         .doc(firebaseAuth.currentUser!.uid)
         .set(userModel.toJson());
+  }
+
+  Future<UserModel> getUser() async {
+    try {
+      var docRef = await firestoreService
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .get();
+      var user = UserModel.fromJson(docRef.data()!);
+      return user;
+    } catch (e) {
+      throw Exception('$e');
+    }
   }
 
   Future<void> createPost(PostModel postModel) async {
@@ -50,6 +62,13 @@ class FirestoreService {
 
   Future<List<PostModel>> getPosts() async {
     var data = await firestoreService.collection("posts").get();
+    var datav2 = data.docs;
+    var datav3 = datav2.map((e) => PostModel.fromJson(e.data())).toList();
+    return datav3;
+  }
+
+  Future<List<PostModel>> getPostsOfUser() async {
+    var data = await firestoreService.collection("posts").where("userId",isEqualTo: firebaseAuth.currentUser!.uid).get();
     var datav2 = data.docs;
     var datav3 = datav2.map((e) => PostModel.fromJson(e.data())).toList();
     return datav3;

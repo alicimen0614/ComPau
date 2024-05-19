@@ -2,7 +2,7 @@ import 'package:community_social_media/const/context_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../models/event_model.dart';
-import '../models/event_model.dart';
+
 
 class EventItemWidget extends StatefulWidget {
   const EventItemWidget({
