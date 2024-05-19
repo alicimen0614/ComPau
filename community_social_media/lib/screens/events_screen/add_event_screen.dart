@@ -111,7 +111,7 @@ class _PostsScreenState extends State<AddEventScreen> {
           preferredCameraDevice: CameraDevice.rear,
           maxHeight: 1000,
           maxWidth: 600,
-          imageQuality: 70);
+          imageQuality: 100);
       if (image == null) {
         return;
       } else {

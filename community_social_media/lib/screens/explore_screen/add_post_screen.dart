@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:community_social_media/const/context_extension.dart';
 import 'package:community_social_media/services/firestore_service.dart';
 import 'package:community_social_media/widgets/custom_text_form_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -94,17 +95,26 @@ class _PostsScreenState extends State<AddPostScreen> {
                     onPressed: () async {
                       debugPrint('post submit');
                       PostModel newPost = PostModel(
-                        description: descriptionController.text == ""
-                            ? null
-                            : descriptionController.text,
-                        timestamp: DateTime.now(),
-                      );
+                          description: descriptionController.text == ""
+                              ? null
+                              : descriptionController.text,
+                          timestamp: DateTime.now(),
+                          userImage:
+                              FirebaseAuth.instance.currentUser!.photoURL ??
+                                  "");
 
                       String imageUrl =
                           await _firestoreService.uploadImage(pickedImage!);
                       newPost.postImageUrl = imageUrl;
 
-                      String userName = await _firestoreService.getUserName();
+                      String userName = "";
+                      if (FirebaseAuth.instance.currentUser!.displayName ==
+                          null) {
+                        userName = await _firestoreService.getUserName();
+                      } else {
+                        userName =
+                            FirebaseAuth.instance.currentUser!.displayName!;
+                      }
                       newPost.userName = userName;
                       newPost.userId =
                           _firestoreService.firebaseAuth.currentUser!.uid;

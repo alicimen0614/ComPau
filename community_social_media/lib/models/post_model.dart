@@ -6,27 +6,28 @@ class PostModel {
   String? description;
   String? postImageUrl;
   String? likes;
+  String? userImage;
 
-  PostModel({
-    this.postId,
-    this.userId,
-    this.userName,
-    this.timestamp,
-    this.description,
-    this.postImageUrl,
-    this.likes,
-  });
+  PostModel(
+      {this.postId,
+      this.userId,
+      this.userName,
+      this.timestamp,
+      this.description,
+      this.postImageUrl,
+      this.likes,
+      this.userImage});
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
-      postId: json['postId'],
-      userId: json['userId'],
-      userName: json['userName'],
-      timestamp: DateTime.parse(json['timestamp']),
-      description: json['description'],
-      postImageUrl: json['postImageUrl'],
-      likes: json['likes'],
-    );
+        postId: json['postId'],
+        userId: json['userId'],
+        userName: json['userName'],
+        timestamp: DateTime.parse(json['timestamp']),
+        description: json['description'],
+        postImageUrl: json['postImageUrl'],
+        likes: json['likes'],
+        userImage: json['userImage']);
   }
 
   Map<String, dynamic> toJson() {
@@ -38,6 +39,7 @@ class PostModel {
       'description': description,
       'postImageUrl': postImageUrl,
       'likes': likes,
+      'userImage': userImage
     };
   }
 }
