@@ -2,6 +2,7 @@ import 'package:community_social_media/const/context_extension.dart';
 import 'package:community_social_media/models/event_model.dart';
 import 'package:community_social_media/screens/events_screen/add_event_screen.dart';
 import 'package:community_social_media/services/firestore_service.dart';
+import 'package:community_social_media/services/firestore_service.dart';
 import 'package:community_social_media/widgets/event_item_widget.dart';
 import 'package:flutter/material.dart';
 

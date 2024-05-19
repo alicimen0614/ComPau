@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import '../../widgets/elevated_button_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -220,6 +221,7 @@ class _PostsScreenState extends State<AddEventScreen> {
           });
         }
       }
+      // ignore: empty_catches
     } on PlatformException {}
   }
 
