@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:community_social_media/models/post_model.dart';
+import 'package:community_social_media/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,12 +12,12 @@ class FirestoreService {
   final firebaseAuth = FirebaseAuth.instance;
   final storage = FirebaseStorage.instance;
 
-  Future<void> createUser(String username) async {
+  Future<void> createUser(UserModel userModel) async {
     print("girdi");
     await firestoreService
         .collection("users")
         .doc(firebaseAuth.currentUser!.uid)
-        .set({"name": username});
+        .set(userModel.toJson());
   }
 
   Future<void> createPost(PostModel postModel) async {
@@ -41,6 +42,13 @@ class FirestoreService {
         .collection("users")
         .doc(firebaseAuth.currentUser!.uid)
         .get();
-    return data.data()!['name'];
+    return data.data()!['userName'];
+  }
+
+  Future<List<PostModel>> getPosts() async {
+    var data = await firestoreService.collection("posts").get();
+    var datav2 = data.docs;
+    var datav3 = datav2.map((e) => PostModel.fromJson(e.data())).toList();
+    return datav3;
   }
 }

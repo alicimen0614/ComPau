@@ -1,4 +1,5 @@
 import 'package:community_social_media/const/context_extension.dart';
+import 'package:community_social_media/models/user_model.dart';
 import 'package:community_social_media/services/firestore_service.dart';
 import 'package:community_social_media/widgets/elevated_button_widget.dart';
 import 'package:email_validator/email_validator.dart';
@@ -337,8 +338,9 @@ class _AuthScreenState extends State<AuthScreen> {
                             builder: (context) => const BottomNavBarBuilder(),
                           ),
                           (route) => false);
-                      await _firestoreService
-                          .createUser(usernameController.text);
+                      await _firestoreService.createUser(UserModel(
+                          userName: usernameController.text,
+                          uid: FirebaseAuth.instance.currentUser!.uid));
                     } else {
                       Navigator.pop(context);
                     }
@@ -489,7 +491,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: CircularProgressIndicator(),
                 ));
 
-        await authService.signInWithGoogle(context).then((value) {
+        await authService.signInWithGoogle(context).then((value) async {
           if (value != null) {
             Navigator.pushAndRemoveUntil(
                 context,
@@ -497,6 +499,11 @@ class _AuthScreenState extends State<AuthScreen> {
                   builder: (context) => const BottomNavBarBuilder(),
                 ),
                 (route) => false);
+            await _firestoreService.createUser(UserModel(
+                userName: usernameController.text,
+                uid: FirebaseAuth.instance.currentUser!.uid,
+                profilePhoto:
+                    FirebaseAuth.instance.currentUser!.photoURL ?? ""));
           } else {
             Navigator.pop(context);
           }

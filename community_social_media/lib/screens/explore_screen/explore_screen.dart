@@ -1,11 +1,26 @@
 import 'package:community_social_media/const/context_extension.dart';
 import 'package:community_social_media/models/post_model.dart';
 import 'package:community_social_media/screens/explore_screen/add_post_screen.dart';
+import 'package:community_social_media/services/firestore_service.dart';
 import 'package:community_social_media/widgets/post_item_widget.dart';
 import 'package:flutter/material.dart';
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
+
+  @override
+  State<ExploreScreen> createState() => _ExploreScreenState();
+}
+
+class _ExploreScreenState extends State<ExploreScreen> {
+  bool isLoading = false;
+  final _firestoreService = FirestoreService();
+  List<PostModel> postList = [];
+  @override
+  void initState() {
+    getPosts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +36,28 @@ class ExploreScreen extends StatelessWidget {
       ),
       backgroundColor: const Color(0xFFEEF5FF),
       appBar: _buildAppBar(context),
-      body: ListView.separated(
-          separatorBuilder: (context, index) => const SizedBox(
-                height: 10,
-              ),
-          itemCount: 2,
-          itemBuilder: (context, index) {
-            return PostItemWidget(
-              post: PostModel(description: "asdadsadsa", postId: "asdasdsads"),
-            );
-          }),
+      body: isLoading == false
+          ? ListView.separated(
+              separatorBuilder: (context, index) => const SizedBox(
+                    height: 10,
+                  ),
+              itemCount: postList.length,
+              itemBuilder: (context, index) {
+                return PostItemWidget(
+                  post: PostModel(
+                      description: postList[index].description,
+                      postId: postList[index].postId,
+                      postImageUrl: postList[index].postImageUrl,
+                      timestamp: postList[index].timestamp,
+                      userId: postList[index].userId,
+                      userName: postList[index].userName,
+                      likes: postList[index].likes,
+                      userImage: postList[index].userImage),
+                );
+              })
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 
@@ -108,5 +135,15 @@ class ExploreScreen extends StatelessWidget {
             ],
           );
         });
+  }
+
+  void getPosts() async {
+    setState(() {
+      isLoading = true;
+    });
+    postList = await _firestoreService.getPosts();
+    setState(() {
+      isLoading = false;
+    });
   }
 }

@@ -93,18 +93,14 @@ class PostItemWidget extends StatelessWidget {
     return Padding(
       padding: context.paddingVerticalDefault,
       child: AspectRatio(
-        aspectRatio: 16 / 10,
+        aspectRatio: 1 / 1,
         child: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("lib/assets/images/kedi.jpg"),
-                  fit: BoxFit.fill)),
-          /* decoration: BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(post.postImageUrl!),
               fit: BoxFit.cover,
             ),
-          ), */
+          ),
         ),
       ),
     );
@@ -122,12 +118,14 @@ class PostItemWidget extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
-                      child: Icon(
-                        Icons.person_2_rounded,
-                        color: Colors.black,
-                        size: 40,
-                      ),
+                    CircleAvatar(
+                      child: post.userImage != null && post.userImage != ""
+                          ? ClipOval(child: Image.network(post.userImage!))
+                          : const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                     ),
                     Padding(
                       padding: context.paddingLeftLow,
