@@ -72,18 +72,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
         style: context.textTheme.titleLarge,
       ),
       centerTitle: true,
-      actions: <Widget>[
-        IconButton(
-          onPressed: () {
-            _viewShowDialog(context);
-          },
-          icon: const Icon(
-            Icons.add_box_outlined,
-            color: Colors.amber,
-            size: 20 * .9,
-          ),
-        )
-      ],
     );
   }
 

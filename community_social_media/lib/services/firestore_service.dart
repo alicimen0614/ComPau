@@ -77,6 +77,18 @@ class FirestoreService {
     return datav3;
   }
 
+  Future<void> addUserIdToLikes(String docId) async {
+    firestoreService.collection("events").doc(docId).update({
+      'likes': [firebaseAuth.currentUser!.uid]
+    });
+  }
+
+  Future<void> deleteUserIdFromLikes(String docId) async {
+    firestoreService.collection("events").doc(docId).update({
+      'likes': FieldValue.arrayRemove([docId])
+    });
+  }
+
   Future<void> createEvent(EventModel newEvent) async {
     var docRef = firestoreService.collection("events").doc();
     newEvent.eventId = docRef.id;
