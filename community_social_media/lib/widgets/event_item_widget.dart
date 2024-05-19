@@ -1,7 +1,9 @@
 import 'package:community_social_media/const/context_extension.dart';
 import 'package:flutter/material.dart';
 
-import '../models/Event_model.dart';
+import '../models/event_model.dart';
+
+
 
 class EventItemWidget extends StatefulWidget {
   const EventItemWidget({
@@ -91,16 +93,12 @@ class _EventItemWidgetState extends State<EventItemWidget> {
       aspectRatio: 16 / 10,
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            image: DecorationImage(
-                image: AssetImage(widget.event.eventImageUrl!),
-                fit: BoxFit.fill)),
-        /* decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
           image: DecorationImage(
-            image: NetworkImage(post.postImageUrl!),
-            fit: BoxFit.cover,
+            image: NetworkImage(widget.event.eventImageUrl!),
+            fit: BoxFit.fill,
           ),
-        ), */
+        ),
       ),
     );
   }
