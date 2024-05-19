@@ -79,13 +79,13 @@ class FirestoreService {
 
   Future<void> addUserIdToLikes(String docId) async {
     firestoreService.collection("events").doc(docId).update({
-      'likes': [firebaseAuth.currentUser!.uid]
+      'likes': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid])
     });
   }
 
   Future<void> deleteUserIdFromLikes(String docId) async {
     firestoreService.collection("events").doc(docId).update({
-      'likes': FieldValue.arrayRemove([docId])
+      'likes': FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid])
     });
   }
 
