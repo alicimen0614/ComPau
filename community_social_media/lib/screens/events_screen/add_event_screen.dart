@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import '../../widgets/elevated_button_widget.dart';
 
 class AddEventScreen extends StatefulWidget {
@@ -19,7 +20,10 @@ class AddEventScreen extends StatefulWidget {
 }
 
 class _PostsScreenState extends State<AddEventScreen> {
+  DateTime? selectedDate;
+  final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final locationController = TextEditingController();
   final _fireStoreService = FirestoreService();
 
   File? pickedImage;
@@ -30,85 +34,147 @@ class _PostsScreenState extends State<AddEventScreen> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: context.paddingAllLow,
-          child: Column(
-            children: [
-              AspectRatio(
-                aspectRatio: 16 / 10,
-                child: pickedImage != null
-                    ? Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: FileImage(
-                              pickedImage!,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container(
-                        color: Colors.grey,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 50,
-                                ),
-                                onPressed: () {
-                                  modalBottomSheetBuilderForPopUpMenu(context);
-                                },
-                              ),
-                              const Text(
-                                "Bir fotoğraf ekle",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              )
-                            ]),
+        child: SizedBox(
+          height: context.height,
+          child: Padding(
+            padding: context.paddingAllDefault,
+            child: Column(
+              children: [
+                _buildAspectRatio(context),
+                SizedBox(
+                  height: context.dynamicHeight(.05),
+                ),
+                TextField(
+                  maxLines: null,
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                      filled: true,
+                      counterStyle: TextStyle(color: Colors.white),
+                      hintText: 'Etkinlik Başlık..',
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder()),
+                ),
+                SizedBox(
+                  height: context.dynamicHeight(.05),
+                ),
+                TextField(
+                  maxLines: null,
+                  controller:
+                      descriptionController, // Attach the controller to the TextField
+                  decoration: const InputDecoration(
+                      filled: true,
+                      counterStyle: TextStyle(color: Colors.white),
+                      hintText: 'Etkinlik Açıklaması..',
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder()),
+                ),
+                SizedBox(
+                  height: context.dynamicHeight(.05),
+                ),
+                TextField(
+                  maxLines: null,
+                  controller:
+                      locationController, // Attach the controller to the TextField
+                  decoration: const InputDecoration(
+                      filled: true,
+                      counterStyle: TextStyle(color: Colors.white),
+                      hintText: 'Etkinlik konum..',
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder()),
+                ),
+                SizedBox(
+                  height: context.dynamicHeight(.05),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      selectedDate == null
+                          ? 'No date selected!'
+                          : 'Tarih: ${DateFormat('dd.MM.yyyy').format(selectedDate!)}',
+                      style: context.textTheme.headlineMedium,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _selectDate(context);
+                        debugPrint(
+                            'Tarih : ${DateFormat('dd.MM.yyyy').format(selectedDate!)}');
+                      },
+                      icon: const Icon(
+                        Icons.calendar_month_rounded,
+                        size: 30,
+                        color: Colors.black,
                       ),
-              ),
-              SizedBox(
-                height: context.dynamicHeight(.05),
-              ),
-              TextField(
-                maxLines: null,
-                controller:
-                    descriptionController, // Attach the controller to the TextField
-                decoration: const InputDecoration(
-                    filled: true,
-                    counterStyle: TextStyle(color: Colors.white),
-                    hintText: 'Mesajınızı buraya yazın...',
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder()),
-              ),
-              SizedBox(
-                height: context.dynamicHeight(.05),
-              ),
-              CustomElevatedButton(
-                btnTitle: 'Paylaş',
-                onPressed: () async {
-                  debugPrint('event submit');
-                  final navigator = Navigator.of(context);
-                  EventModel newEvent = EventModel(
-                    description: descriptionController.text == ""
-                        ? null
-                        : descriptionController.text,
-                    timestamp: DateTime.now(),
-                  );
-                  String imageUrl =
-                      await _fireStoreService.uploadImage(pickedImage!);
-                  newEvent.eventImageUrl = imageUrl;
-                  await _fireStoreService.createEvent(newEvent);
-                  navigator.pop();
-                },
-                btnColor: Colors.blue,
-                textColor: Colors.white,
-              ),
-            ],
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: context.dynamicHeight(.05),
+                ),
+                CustomElevatedButton(
+                  btnTitle: 'Paylaş',
+                  onPressed: () async {
+                    debugPrint('event submit');
+                    final navigator = Navigator.of(context);
+                    EventModel newEvent = EventModel(
+                      eventTitle: titleController.text,
+                      description: descriptionController.text == ""
+                          ? null
+                          : descriptionController.text,
+                      
+                      eventDate: selectedDate,
+                      location: locationController.text
+                    );
+                    String imageUrl =
+                        await _fireStoreService.uploadImage(pickedImage!);
+                    newEvent.eventImageUrl = imageUrl;
+                    await _fireStoreService.createEvent(newEvent);
+                    navigator.pop();
+                  },
+                  btnColor: Colors.blue,
+                  textColor: Colors.white,
+                ),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  AspectRatio _buildAspectRatio(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 16 / 10,
+      child: pickedImage != null
+          ? Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(
+                    pickedImage!,
+                  ),
+                ),
+              ),
+            )
+          : Container(
+              color: Colors.grey,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.camera_alt_outlined,
+                        size: 50,
+                      ),
+                      onPressed: () {
+                        modalBottomSheetBuilderForPopUpMenu(context);
+                      },
+                    ),
+                    const Text(
+                      "Bir fotoğraf ekle",
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    )
+                  ]),
+            ),
     );
   }
 
@@ -188,5 +254,19 @@ class _PostsScreenState extends State<AddEventScreen> {
         ]);
       },
     );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
   }
 }

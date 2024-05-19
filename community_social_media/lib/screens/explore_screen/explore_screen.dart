@@ -55,7 +55,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       userImage: postList[index].userImage),
                 );
               })
-          : Center(
+          : const Center(
               child: CircularProgressIndicator(),
             ),
     );
