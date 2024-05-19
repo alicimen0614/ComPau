@@ -131,7 +131,7 @@ class _PostsScreenState extends State<AddEventScreen> {
                         SnackBar(content: Text("Lütfen bir fotoğraf ekleyin")));
                   } else {
                     debugPrint('event submit');
-                    final navigator = Navigator.of(context);
+
                     EventModel newEvent = EventModel(
                         eventTitle: titleController.text,
                         description: descriptionController.text == ""
@@ -148,7 +148,7 @@ class _PostsScreenState extends State<AddEventScreen> {
                         await _fireStoreService.uploadImage(pickedImage!);
                     newEvent.eventImageUrl = imageUrl;
                     await _fireStoreService.createEvent(newEvent);
-                    navigator.pop();
+                    Navigator.pop(context, true);
                   }
                 },
                 btnColor: const Color(0xFF004485),

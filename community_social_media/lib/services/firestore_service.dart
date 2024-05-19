@@ -61,7 +61,8 @@ class FirestoreService {
   }
 
   Future<List<PostModel>> getPosts() async {
-    var data = await firestoreService.collection("posts").get();
+    var data =
+        await firestoreService.collection("posts").orderBy("timestamp").get();
     var datav2 = data.docs;
     var datav3 = datav2.map((e) => PostModel.fromJson(e.data())).toList();
     return datav3;
@@ -80,10 +81,15 @@ class FirestoreService {
     await docRef.set(newEvent.toJson());
   }
 
-  Future<List<EventModel>> getEvent() async {
+  Future<List<EventModel>> getEvent(bool bringHistory) async {
     try {
       List<EventModel> events = List<EventModel>.empty(growable: true);
-      var querySnapshot = await firestoreService.collection("events").get();
+
+      var querySnapshot = await firestoreService
+          .collection("events")
+          .orderBy("eventDate",
+              descending: bringHistory == false ? false : true)
+          .get();
       for (var doc in querySnapshot.docs) {
         var event = EventModel.fromJson(doc.data());
         events.add(event);
