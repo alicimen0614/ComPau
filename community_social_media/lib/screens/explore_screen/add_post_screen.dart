@@ -29,7 +29,10 @@ class _PostsScreenState extends State<AddPostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text("Gönderi oluştur"),
+          centerTitle: true,
+        ),
         body: SingleChildScrollView(
           child: Padding(
               padding: context.paddingAllLow,
@@ -77,17 +80,19 @@ class _PostsScreenState extends State<AddPostScreen> {
                     maxLines: null,
                     controller:
                         descriptionController, // Attach the controller to the TextField
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                         filled: true,
                         counterStyle: TextStyle(color: Colors.white),
-                        hintText: 'Mesajınızı buraya yazın...',
+                        hintText: 'Açıklama',
                         fillColor: Colors.white,
-                        border: OutlineInputBorder()),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25))),
                   ),
                   SizedBox(
                     height: context.dynamicHeight(.05),
                   ),
                   CustomElevatedButton(
+                    borderRadius: 25,
                     btnTitle: 'Paylaş',
                     onPressed: () async {
                       debugPrint('post submit');
@@ -118,7 +123,7 @@ class _PostsScreenState extends State<AddPostScreen> {
 
                       await _firestoreService.createPost(newPost);
                     },
-                    btnColor: Colors.blue,
+                    btnColor: const Color(0xFF004485),
                     textColor: Colors.white,
                   ),
                 ],

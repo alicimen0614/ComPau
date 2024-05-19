@@ -2,6 +2,7 @@ import 'package:community_social_media/const/context_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../models/event_model.dart';
+import '../models/event_model.dart';
 
 class EventItemWidget extends StatefulWidget {
   const EventItemWidget({
@@ -88,15 +89,13 @@ class _EventItemWidgetState extends State<EventItemWidget> {
 
   Widget _itemBody(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 16 / 10,
+      aspectRatio: 16 / 16,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          image: DecorationImage(
-            image: NetworkImage(widget.event.eventImageUrl!),
-            fit: BoxFit.fill,
-          ),
-        ),
+            borderRadius: BorderRadius.circular(25),
+            image: DecorationImage(
+                image: NetworkImage(widget.event.eventImageUrl!),
+                fit: BoxFit.fill)),
       ),
     );
   }
@@ -111,12 +110,16 @@ class _EventItemWidgetState extends State<EventItemWidget> {
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
-                    child: Icon(
-                      Icons.person_2_rounded,
-                      color: Colors.black,
-                      size: 40,
-                    ),
+                  CircleAvatar(
+                    child: widget.event.organizerImage != null &&
+                            widget.event.organizerImage != ""
+                        ? ClipOval(
+                            child: Image.network(widget.event.organizerImage!))
+                        : const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 30,
+                          ),
                   ),
                   Padding(
                     padding: context.paddingLeftLow,

@@ -239,13 +239,17 @@ class _AuthScreenState extends State<AuthScreen> {
               bottomRadius: 10,
               child: CustomTextFormField(
                 validator: (value) {
-                  return null;
+                  if (value != "") {
+                    return null;
+                  } else {
+                    return "Lütfen isim-soyisim kısmını doldurunuz.";
+                  }
                 },
                 textEditingController: usernameController,
                 autoCorrect: true,
                 textInputType: TextInputType.emailAddress,
                 prefixIconData: Icons.account_circle,
-                label: 'İsim-Soyism',
+                label: 'İsim-Soyisim',
               ),
             ),
             _viewTextFormfield(
@@ -500,7 +504,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 (route) => false);
             await _firestoreService.createUser(UserModel(
-                userName: usernameController.text,
+                userName: FirebaseAuth.instance.currentUser!.displayName,
                 uid: FirebaseAuth.instance.currentUser!.uid,
                 profilePhoto:
                     FirebaseAuth.instance.currentUser!.photoURL ?? ""));

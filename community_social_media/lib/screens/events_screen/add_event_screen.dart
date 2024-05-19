@@ -1,14 +1,15 @@
 import 'dart:io';
-
 import 'package:community_social_media/const/context_extension.dart';
 import 'package:community_social_media/models/event_model.dart';
 import 'package:community_social_media/services/firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/elevated_button_widget.dart';
+import 'package:intl/intl.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({
@@ -24,6 +25,8 @@ class _PostsScreenState extends State<AddEventScreen> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final locationController = TextEditingController();
+  final dateController = TextEditingController();
+
   final _fireStoreService = FirestoreService();
 
   File? pickedImage;
@@ -32,110 +35,126 @@ class _PostsScreenState extends State<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Etkinlik oluştur"),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
-        child: SizedBox(
-          height: context.height,
-          child: Padding(
-            padding: context.paddingAllDefault,
-            child: Column(
-              children: [
-                _buildAspectRatio(context),
-                SizedBox(
-                  height: context.dynamicHeight(.05),
-                ),
-                TextField(
-                  maxLines: null,
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                      filled: true,
-                      counterStyle: TextStyle(color: Colors.white),
-                      hintText: 'Etkinlik Başlık..',
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder()),
-                ),
-                SizedBox(
-                  height: context.dynamicHeight(.05),
-                ),
-                TextField(
-                  maxLines: null,
-                  controller:
-                      descriptionController, // Attach the controller to the TextField
-                  decoration: const InputDecoration(
-                      filled: true,
-                      counterStyle: TextStyle(color: Colors.white),
-                      hintText: 'Etkinlik Açıklaması..',
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder()),
-                ),
-                SizedBox(
-                  height: context.dynamicHeight(.05),
-                ),
-                TextField(
-                  maxLines: null,
-                  controller:
-                      locationController, // Attach the controller to the TextField
-                  decoration: const InputDecoration(
-                      filled: true,
-                      counterStyle: TextStyle(color: Colors.white),
-                      hintText: 'Etkinlik konum..',
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder()),
-                ),
-                SizedBox(
-                  height: context.dynamicHeight(.05),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      selectedDate == null
-                          ? 'No date selected!'
-                          : 'Tarih: ${DateFormat('dd.MM.yyyy').format(selectedDate!)}',
-                      style: context.textTheme.headlineMedium,
+        child: Padding(
+          padding: context.paddingAllDefault,
+          child: Column(
+            children: [
+              _buildAspectRatio(context),
+              SizedBox(
+                height: context.dynamicHeight(.03),
+              ),
+              TextField(
+                maxLines: null,
+                controller: titleController,
+                decoration: InputDecoration(
+                    filled: true,
+                    counterStyle: const TextStyle(color: Colors.white),
+                    hintText: 'Başlık',
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25))),
+              ),
+              SizedBox(
+                height: context.dynamicHeight(.03),
+              ),
+              TextField(
+                maxLines: null,
+                controller:
+                    descriptionController, // Attach the controller to the TextField
+                decoration: InputDecoration(
+                    filled: true,
+                    counterStyle: const TextStyle(color: Colors.white),
+                    hintText: 'Açıklama',
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25))),
+              ),
+              SizedBox(
+                height: context.dynamicHeight(.03),
+              ),
+              TextField(
+                maxLines: null,
+                controller:
+                    locationController, // Attach the controller to the TextField
+                decoration: InputDecoration(
+                    filled: true,
+                    counterStyle: const TextStyle(color: Colors.white),
+                    hintText: 'Konum',
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25))),
+              ),
+              SizedBox(
+                height: context.dynamicHeight(.03),
+              ),
+              TextField(
+                canRequestFocus: false,
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  _selectDate(context);
+                },
+                maxLines: null,
+                controller: dateController,
+                decoration: InputDecoration(
+                    suffixIcon: const Icon(
+                      Icons.calendar_month_rounded,
+                      size: 30,
+                      color: Colors.black,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        _selectDate(context);
-                        debugPrint(
-                            'Tarih : ${DateFormat('dd.MM.yyyy').format(selectedDate!)}');
-                      },
-                      icon: const Icon(
-                        Icons.calendar_month_rounded,
-                        size: 30,
-                        color: Colors.black,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: context.dynamicHeight(.05),
-                ),
-                CustomElevatedButton(
-                  btnTitle: 'Paylaş',
-                  onPressed: () async {
+                    filled: true,
+                    counterStyle: const TextStyle(color: Colors.white),
+                    hintText: 'Tarih',
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25))),
+              ),
+              SizedBox(
+                height: context.dynamicHeight(.03),
+              ),
+              CustomElevatedButton(
+                borderRadius: 25,
+                btnTitle: 'Paylaş',
+                onPressed: () async {
+                  if (titleController.text.isEmpty ||
+                      descriptionController.text.isEmpty ||
+                      locationController.text.isEmpty ||
+                      dateController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Lütfen tüm alanları doldurun")));
+                  } else if (pickedImage == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Lütfen bir fotoğraf ekleyin")));
+                  } else {
                     debugPrint('event submit');
                     final navigator = Navigator.of(context);
                     EventModel newEvent = EventModel(
-                      eventTitle: titleController.text,
-                      description: descriptionController.text == ""
-                          ? null
-                          : descriptionController.text,
-                      
-                      eventDate: selectedDate,
-                      location: locationController.text
-                    );
+                        eventTitle: titleController.text,
+                        description: descriptionController.text == ""
+                            ? null
+                            : descriptionController.text,
+                        eventDate: selectedDate,
+                        location: locationController.text,
+                        organizer: await _fireStoreService.getUserName(),
+                        organizerId: FirebaseAuth.instance.currentUser!.uid,
+                        organizerImage:
+                            FirebaseAuth.instance.currentUser!.photoURL ?? "");
+
                     String imageUrl =
                         await _fireStoreService.uploadImage(pickedImage!);
                     newEvent.eventImageUrl = imageUrl;
                     await _fireStoreService.createEvent(newEvent);
                     navigator.pop();
-                  },
-                  btnColor: Colors.blue,
-                  textColor: Colors.white,
-                ),
-              ],
-            ),
+                  }
+                },
+                btnColor: const Color(0xFF004485),
+                textColor: Colors.white,
+              ),
+            ],
           ),
         ),
       ),
@@ -263,10 +282,29 @@ class _PostsScreenState extends State<AddEventScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != selectedDate) {
+
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      helpText: "Bir saat seçin",
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? Container(),
+        );
+      },
+    );
+    if (picked != null && selectedTime != null) {
+      DateTime dateTime = DateTime(picked!.year, picked.month, picked.day,
+          selectedTime!.hour, selectedTime.minute);
+      String formattedDateTime =
+          DateFormat('dd-MM-yyyy HH:mm').format(dateTime);
+      print(formattedDateTime);
+
       setState(() {
-        selectedDate = picked;
+        dateController.text = formattedDateTime;
+        selectedDate = dateTime;
       });
-    }
+    } else {}
   }
 }
