@@ -1,4 +1,5 @@
 import 'package:community_social_media/const/context_extension.dart';
+import 'package:community_social_media/screens/user_screen/detailed_post_screen.dart';
 import 'package:community_social_media/services/auth_service.dart';
 import 'package:community_social_media/services/firestore_service.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,12 @@ class ProfileScreen extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   debugPrint('post detay');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetailedPostScreen(post: posts[index]),
+                      ));
                 },
                 child: Container(
                     color: Colors.grey.withOpacity(.1),
