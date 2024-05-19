@@ -1,32 +1,41 @@
 class EventModel {
   String? eventId;
-  String? userId;
-  String? userName;
-  DateTime? timestamp;
+  String? organizer;
+  String? organizerId;
+  String? eventTitle;
+  String? category;
+  DateTime? eventDate;
   String? description;
   String? eventImageUrl;
+  String? location;
   String? likes;
-  List<String>? paticipants;
+  List<String>? participants;
 
   EventModel({
     this.eventId,
-    this.userId,
-    this.userName,
-    this.timestamp,
+    this.organizer,
+    this.organizerId,
+    this.eventTitle,
+    this.category,
+    this.eventDate,
     this.description,
     this.eventImageUrl,
+    this.location,
     this.likes,
-    this.paticipants
+    this.participants,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
       eventId: json['eventId'],
-      userId: json['userId'],
-      userName: json['userName'],
-      timestamp: DateTime.parse(json['timestamp']),
+      organizer: json['organizer'],
+      organizerId: json['organizerId'],
+      eventTitle: json['eventTitle'],
+      category: json['category'],
+      eventDate: DateTime.parse(json['eventDate']),
       description: json['description'],
       eventImageUrl: json['eventImageUrl'],
+      location: json['location'],
       likes: json['likes'],
     );
   }
@@ -34,11 +43,14 @@ class EventModel {
   Map<String, dynamic> toJson() {
     return {
       'eventId': eventId,
-      'userId': userId,
-      'userName': userName,
-      'timestamp': timestamp?.toIso8601String(),
+      'organizer': organizer,
+      'organizerId': organizerId,
+      'eventTitle': eventTitle,
+      'category': category,
+      'eventDate': eventDate?.toIso8601String(),
       'description': description,
       'eventImageUrl': eventImageUrl,
+      'location': location,
       'likes': likes,
     };
   }

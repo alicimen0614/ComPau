@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../models/event_model.dart';
 
-
-
 class EventItemWidget extends StatefulWidget {
   const EventItemWidget({
     super.key,
@@ -123,7 +121,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
                   Padding(
                     padding: context.paddingLeftLow,
                     child: Text(
-                      widget.event.userName ?? 'User Name',
+                      widget.event.organizer ?? 'User Name',
                       style: context.textTheme.bodyLarge,
                     ),
                   ),
