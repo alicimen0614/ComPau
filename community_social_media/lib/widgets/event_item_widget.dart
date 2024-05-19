@@ -1,10 +1,10 @@
 import 'package:community_social_media/const/context_extension.dart';
 import 'package:community_social_media/screens/events_screen/detailed_event_screen.dart';
+import 'package:community_social_media/screens/events_screen/events_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/event_model.dart';
-
 
 class EventItemWidget extends StatefulWidget {
   const EventItemWidget({
@@ -62,17 +62,25 @@ class _EventItemWidgetState extends State<EventItemWidget> {
     return Row(
       children: [
         IconButton(
-            onPressed: () {
+            onPressed: () async {
+              //doing this knowingly :(
+
               setState(() {
                 isLiked = !isLiked;
               });
+              if (isLiked == true) {
+                await firestoreService.addUserIdToLikes(widget.event.eventId!);
+              } else {
+                await firestoreService
+                    .deleteUserIdFromLikes(widget.event.eventId!);
+              }
             },
             icon: Icon(
               isLiked != true
                   ? Icons.favorite_border_rounded
                   : Icons.favorite_outlined,
-              size: 25,
-              color: Colors.black,
+              size: 35,
+              color: isLiked ? Colors.red : Colors.black,
             )),
         const SizedBox(
           width: 5,
@@ -81,7 +89,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
             onPressed: () {},
             icon: const Icon(
               Icons.chat_bubble_outline_rounded,
-              size: 25,
+              size: 35,
               color: Colors.black,
             )),
         const SizedBox(
@@ -89,7 +97,7 @@ class _EventItemWidgetState extends State<EventItemWidget> {
         ),
         const Icon(
           Icons.location_pin,
-          size: 30,
+          size: 35,
           color: Colors.black,
         ),
         SizedBox(width: 130, child: Text(widget.event!.location!)),
